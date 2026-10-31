@@ -1,0 +1,27 @@
+backend:
+  name: github
+  repo: maximedezume6363/Yoohoo-TV
+  branch: main
+site_url: https://yoohookidscartoonstv.com
+media_folder: "videos"
+public_folder: "/videos"
+collections:
+  - name: "tv"
+    label: "YOOHOO TV"
+    files:
+      - name: "playlist"
+        label: "TV Playlist (Now Playing)"
+        file: "content/playlist.json"
+        fields:
+          - {label: "Channel name", name: "channel_name", widget: "string"}
+          - label: "Episodes (play top to bottom, then repeat)"
+            name: "episodes"
+            widget: "list"
+            fields:
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Video (MP4, under 100 MB)", name: "video", widget: "file"}
+              - {label: "Cover picture", name: "poster", widget: "image", required: false}
+          - {label: "Show sponsor ad between episodes?", name: "sponsor_on", widget: "boolean", default: false}
+          - {label: "Sponsor name", name: "sponsor_name", widget: "string", required: false}
+          - {label: "Sponsor ad video (MP4)", name: "sponsor_video", widget: "file", required: false}
+          - {label: "Sponsor website link", name: "sponsor_link", widget: "string", required: false}
