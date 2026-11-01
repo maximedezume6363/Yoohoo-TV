@@ -1,6 +1,11 @@
 {
   "channel_name": "YOOHOO KIDS CARTOONS TV",
-  "episodes": [],
+  "episodes": [
+    {
+      "video": "/videos/shared_ce2cde68-0cae-4055-98fc-9319f0e72a8e_zoo-scene-1.mp4",
+      "title": "SCENE 1 — A BEAUTIFUL DAY AT THE ZOO!"
+    }
+  ],
   "sponsor_on": false,
   "sponsor_name": "",
   "sponsor_video": "",
