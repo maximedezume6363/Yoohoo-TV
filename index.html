@@ -31,7 +31,15 @@ footer{text-align:center;padding:24px;opacity:.7}
 <div class="card" id="donate"><h3>Donate</h3><p>Help us make more cartoons!</p><p><b>Cash App:</b> $Maxim6363</p><p><b>Zelle:</b> message us for details</p><a class="btn" href="/donate.html">Donate now</a></div>
 <div class="card" id="shop"><h3>All 4 One Shop</h3><p>Caps, jerseys, T-shirts, bottles, gym bags and more. Stay Strong!</p><a class="btn" href="https://all4oneshop.com" target="_blank">Visit the shop</a></div>
 <div class="card" id="ads"><h3>Advertise with us</h3><p>Put your business video ad between our cartoon episodes. Message us on Facebook or Instagram.</p><a class="btn" href="/advertise.html">See ad options</a></div>
-</div></div>
+</div></div><div class="wrap"><h3>🔴 Live Channel</h3>
+<video id="yoohoo" controls autoplay muted playsinline style="width:100%;max-width:960px;background:#000;border-radius:12px"></video></div>
+<script src="https://cdn.jsdelivr.net/npm/hls.js"></script>                              
+<script>
+  var lv = document.getElementById('yoohoo');
+  var lsrc = "https://tv.yoohookidscartoonstv.com/iptv/channel/1.m3u8';
+  if (lv.canPlayType('application/vnd.apple.mpegurl')) { lv.src = lsrc; }
+  else if (Hls.isSupported()) { var lh = new Hls(); lh.loadSource(lsrc); lh.attachMedia(lv); }
+</script>
 <footer>© YOOHOO KIDS CARTOONS TV · Made with AI</footer>
 <script>
 const v=document.getElementById('v'),t=document.getElementById('t'),sp=document.getElementById('sp'),um=document.getElementById('unmute');
