@@ -37,8 +37,16 @@ footer{text-align:center;padding:24px;opacity:.7}
 <script>
   var lv = document.getElementById('yoohoo');
   var lsrc = "https://tv.yoohookidscartoonstv.com/iptv/channel/1.m3u8";
-  if (lv.canPlayType('application/vnd.apple.mpegurl')) { lv.src = lsrc; }
-  else if (Hls.isSupported()) { var lh = new Hls(); lh.loadSource(lsrc); lh.attachMedia(lv); }
+  if (window.Hls && Hls.isSupported()) {
+    var lh = new Hls({liveSyncDurationCount: 4, liveMaxLatencyDurationCount: 10, maxBufferLength: 60, backBufferLength: 30, lowLatencyMode: false, manifestLoadingMaxRetry: 10, levelLoadingMaxRetry: 10, fragLoadingMaxRetry: 10});
+    lh.loadSource(lsrc); lh.attachMedia(lv);
+    lh.on(Hls.Events.ERROR, function (e, data) {
+      if (data.fatal) {
+        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { lh.startLoad(); }
+        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) { lh.recoverMediaError(); }
+      }
+    });
+  } else if (lv.canPlayType('application/vnd.apple.mpegurl')) { lv.src = lsrc; }
 </script>
 <footer>© YOOHOO KIDS CARTOONS TV · Made with AI</footer>
 <script>
