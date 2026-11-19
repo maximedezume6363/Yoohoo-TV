@@ -44,13 +44,16 @@ footer{text-align:center;padding:24px;opacity:.7}
 (function(){
   var lv=document.getElementById('yoohoo'), top=document.getElementById('v');
   var tsrc="https://tv.yoohookidscartoonstv.com/iptv/channel/1.ts";
+  var buffering=false;
+  function ahead(){var b=lv.buffered;for(var k=0;k<b.length;k++){if(lv.currentTime>=b.start(k)-0.5&&lv.currentTime<=b.end(k))return b.end(k)-Math.max(lv.currentTime,b.start(k));}return 0;}
+  function waitBuf(){if(ahead()>=6){buffering=false;lv.play().catch(function(){});}else{setTimeout(waitBuf,250);}}
   var lsrc="https://tv.yoohookidscartoonstv.com/iptv/channel/1.m3u8", lh=null, mp=null;
   function start(){
     if(mp){try{mp.destroy();}catch(e){} mp=null;}
     if(window.mpegts&&mpegts.getFeatureList().mseLivePlayback){
-      mp=mpegts.createPlayer({type:'mpegts',isLive:true,url:tsrc},{enableStashBuffer:true,stashInitialSize:1024*1024,liveBufferLatencyChasing:false,lazyLoad:false,autoCleanupSourceBuffer:true});
-      mp.attachMediaElement(lv); mp.load(); lv.play().catch(function(){});
-      mp.on(mpegts.Events.ERROR,function(){setTimeout(start,2000);});
+      mp=mpegts.createPlayer({type:'mpegts',isLive:true,url:tsrc},{enableStashBuffer:true,stashInitialSize:4*1024*1024,liveBufferLatencyChasing:false,liveSync:false,lazyLoad:false,autoCleanupSourceBuffer:true,autoCleanupMaxBackwardDuration:120,autoCleanupMinBackwardDuration:60});
+      mp.attachMediaElement(lv); mp.load(); buffering=true; waitBuf();
+      mp.on(mpegts.Events.ERROR,function(){setTimeout(start,3000);});
       mp.on(mpegts.Events.LOADING_COMPLETE,function(){setTimeout(start,1000);});
     } else if(window.Hls&&Hls.isSupported()){
       if(lh)lh.destroy();
@@ -59,12 +62,11 @@ footer{text-align:center;padding:24px;opacity:.7}
     } else { lv.src=lsrc; lv.play().catch(function(){}); }
   }
   start();
-  // if stuck loading more than 8s, jump back to live
-  var stuck=null;
-  lv.addEventListener('waiting',function(){clearTimeout(stuck);stuck=setTimeout(function(){if(lh&&lh.liveSyncPosition){lv.currentTime=lh.liveSyncPosition;}lv.play().catch(function(){});},8000);});
+  // when the picture runs out, pause and refill ~6s of video before playing again (no skipping)
+  lv.addEventListener('waiting',function(){if(mp&&!buffering){buffering=true;waitBuf();}});
   lv.addEventListener('playing',function(){clearTimeout(stuck); if(top&&!top.paused){top.pause();}});
   // never stay paused: live TV keeps going
-  lv.addEventListener('pause',function(){setTimeout(function(){lv.play().catch(function(){});},300);});
+  lv.addEventListener('pause',function(){if(buffering)return;setTimeout(function(){lv.play().catch(function(){});},300);});
   // stop the top video so both don't share the connection
   if(top){top.addEventListener('play',function(){if(!lv.paused)top.pause();});}
   document.getElementById('lmute').onclick=function(){lv.muted=false;lv.play().catch(function(){});this.style.display='none';};
