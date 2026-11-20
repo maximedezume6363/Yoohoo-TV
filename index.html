@@ -38,28 +38,20 @@ footer{text-align:center;padding:24px;opacity:.7}
 <video id="yoohoo" autoplay muted playsinline preload="auto" style="pointer-events:none"></video>
 <button id="lmute" style="position:absolute;bottom:16px;right:16px;background:#ffd400;color:#000;border:0;padding:10px 18px;border-radius:30px;font-weight:800;cursor:pointer">🔊 Tap for sound</button>
 <button id="lfull" style="position:absolute;bottom:16px;left:16px;background:rgba(0,0,0,.6);color:#fff;border:0;padding:10px 14px;border-radius:30px;font-weight:800;cursor:pointer">⛶</button></div></div>
-<script src="https://cdn.jsdelivr.net/npm/mpegts.js@1.7.3/dist/mpegts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js"></script>
 <script>
 (function(){
   var lv=document.getElementById('yoohoo'), top=document.getElementById('v');
-  var tsrc="https://tv.yoohookidscartoonstv.com/iptv/channel/1.ts";
-  var lsrc="https://tv.yoohookidscartoonstv.com/iptv/channel/1.m3u8", lh=null, mp=null, restarting=false;
+  var lsrc="https://tv.yoohookidscartoonstv.com/live/live.m3u8", lh=null, restarting=false;
   function start(){
     restarting=false;
-    if(mp){try{mp.destroy();}catch(e){} mp=null;}
-    if(window.mpegts&&mpegts.getFeatureList().mseLivePlayback){
-      mp=mpegts.createPlayer({type:'mpegts',isLive:true,url:tsrc},{enableWorker:true,enableStashBuffer:true,stashInitialSize:2*1024*1024,liveBufferLatencyChasing:false,liveSync:false,lazyLoad:false,deferLoadAfterSourceOpen:false,autoCleanupSourceBuffer:true,autoCleanupMaxBackwardDuration:90,autoCleanupMinBackwardDuration:45,fixAudioTimestampGap:true});
-      mp.attachMediaElement(lv); mp.load();
-      var pr=mp.play(); if(pr&&pr.catch)pr.catch(function(){});
-      mp.on(mpegts.Events.ERROR,function(){restart(1500);});
-      mp.on(mpegts.Events.LOADING_COMPLETE,function(){restart(200);});
-    } else if(window.Hls&&Hls.isSupported()){
-      if(lh)lh.destroy();
-      lh=new Hls({liveSyncDurationCount:6,liveMaxLatencyDurationCount:20,maxBufferLength:90,maxMaxBufferLength:180,manifestLoadingMaxRetry:99,levelLoadingMaxRetry:99,fragLoadingMaxRetry:99,manifestLoadingRetryDelay:1000,fragLoadingRetryDelay:1000});
-      lh.on(Hls.Events.ERROR,function(e,d){if(d.fatal){if(d.type===Hls.ErrorTypes.MEDIA_ERROR){lh.recoverMediaError();}else{restart(1500);}}});
-      lh.loadSource(lsrc); lh.attachMedia(lv); lv.play().catch(function(){});
-    } else { lv.src=lsrc; lv.load(); lv.play().catch(function(){}); lv.onerror=function(){restart(1500);}; }
+    if(window.Hls&&Hls.isSupported()){
+      if(lh){try{lh.destroy();}catch(e){}}
+      lh=new Hls({liveSyncDurationCount:3,liveMaxLatencyDurationCount:9,maxBufferLength:40,backBufferLength:30,manifestLoadingMaxRetry:99,levelLoadingMaxRetry:99,fragLoadingMaxRetry:99,manifestLoadingRetryDelay:1000,levelLoadingRetryDelay:1000,fragLoadingRetryDelay:1000});
+      lh.on(Hls.Events.ERROR,function(e,d){if(d.fatal){if(d.type===Hls.ErrorTypes.MEDIA_ERROR){lh.recoverMediaError();}else{restart(2000);}}});
+      lh.loadSource(lsrc); lh.attachMedia(lv);
+      lh.on(Hls.Events.MANIFEST_PARSED,function(){lv.play().catch(function(){});});
+    } else { lv.src=lsrc; lv.load(); lv.play().catch(function(){}); lv.onerror=function(){restart(2000);}; }
   }
   function restart(ms){if(restarting)return;restarting=true;setTimeout(start,ms);}
   start();
@@ -68,7 +60,7 @@ footer{text-align:center;padding:24px;opacity:.7}
   setInterval(function(){
     if(lv.currentTime!==lastT){lastT=lv.currentTime;still=0;return;}
     still++; if(lv.paused&&still>=2){lv.play().catch(function(){});}
-    if(still>=8){still=0;restart(0);}
+    if(still>=20){still=0;restart(0);}
   },1000);
   lv.addEventListener('stalled',function(){lv.play().catch(function(){});});
   lv.addEventListener('waiting',function(){setTimeout(function(){if(lv.paused)lv.play().catch(function(){});},1500);});
