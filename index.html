@@ -34,42 +34,7 @@ footer{text-align:center;padding:24px;opacity:.7}
 <div class="card" id="shop"><h3>All 4 One Shop</h3><p>Caps, jerseys, T-shirts, bottles, gym bags and more. Stay Strong!</p><a class="btn" href="https://all4oneshop.com" target="_blank">Visit the shop</a></div>
 <div class="card" id="ads"><h3>Advertise with us</h3><p>Put your business video ad between our cartoon episodes. Message us on Facebook or Instagram.</p><a class="btn" href="/advertise.html">See ad options</a></div>
 </div></div><div class="wrap"><h3>🔴 Live Channel</h3>
-<div class="tv" id="livebox" style="max-width:960px"><span class="badge">● LIVE</span>
-<video id="yoohoo" autoplay muted playsinline preload="auto" style="pointer-events:none"></video>
-<button id="lmute" style="position:absolute;bottom:16px;right:16px;background:#ffd400;color:#000;border:0;padding:10px 18px;border-radius:30px;font-weight:800;cursor:pointer">🔊 Tap for sound</button>
-<button id="lfull" style="position:absolute;bottom:16px;left:16px;background:rgba(0,0,0,.6);color:#fff;border:0;padding:10px 14px;border-radius:30px;font-weight:800;cursor:pointer">⛶</button></div></div>
-<script src="https://cdn.jsdelivr.net/npm/hls.js"></script>
-<script>
-(function(){
-  var lv=document.getElementById('yoohoo'), top=document.getElementById('v');
-  var lsrc="https://tv.yoohookidscartoonstv.com/live/live.m3u8", lh=null, restarting=false;
-  function start(){
-    restarting=false;
-    if(window.Hls&&Hls.isSupported()){
-      if(lh){try{lh.destroy();}catch(e){}}
-      lh=new Hls({liveSyncDurationCount:3,liveMaxLatencyDurationCount:9,maxBufferLength:40,backBufferLength:30,manifestLoadingMaxRetry:99,levelLoadingMaxRetry:99,fragLoadingMaxRetry:99,manifestLoadingRetryDelay:1000,levelLoadingRetryDelay:1000,fragLoadingRetryDelay:1000});
-      lh.on(Hls.Events.ERROR,function(e,d){if(d.fatal){if(d.type===Hls.ErrorTypes.MEDIA_ERROR){lh.recoverMediaError();}else{restart(2000);}}});
-      lh.loadSource(lsrc); lh.attachMedia(lv);
-      lh.on(Hls.Events.MANIFEST_PARSED,function(){lv.play().catch(function(){});});
-    } else { lv.src=lsrc; lv.load(); lv.play().catch(function(){}); lv.onerror=function(){restart(2000);}; }
-  }
-  function restart(ms){if(restarting)return;restarting=true;setTimeout(start,ms);}
-  start();
-  // watchdog: only reconnect if the picture is truly stuck for 20 seconds
-  var lastT=-1, still=0;
-  setInterval(function(){
-    if(lv.currentTime!==lastT){lastT=lv.currentTime;still=0;return;}
-    still++; if(lv.paused&&still>=2){lv.play().catch(function(){});}
-    if(still>=20){still=0;restart(0);}
-  },1000);
-  lv.addEventListener('stalled',function(){lv.play().catch(function(){});});
-  lv.addEventListener('waiting',function(){setTimeout(function(){if(lv.paused)lv.play().catch(function(){});},1500);});
-  lv.addEventListener('playing',function(){if(top&&!top.paused){top.pause();}});
-  if(top){top.addEventListener('play',function(){if(!lv.paused)top.pause();});}
-  document.getElementById('lmute').onclick=function(){lv.muted=false;lv.play().catch(function(){});this.style.display='none';};
-  document.getElementById('lfull').onclick=function(){var b=document.getElementById('livebox');(b.requestFullscreen||b.webkitRequestFullscreen||function(){lv.webkitEnterFullscreen&&lv.webkitEnterFullscreen();}).call(b);};
-})();
-</script>
+<div class="tv" id="livebox" style="max-width:960px;position:relative;padding-bottom:56.25%;height:0"><iframe src="https://player.viloud.tv/embed/channel/604c0b36e53a2fa33b36a30905818e7f?autoplay=1&volume=1&controls=1&title=1&share=1&open_playlist=0&random=0" style="position:absolute;top:0;left:0;width:100%;height:100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe></div></div>
 <footer>© YOOHOO KIDS CARTOONS TV · Made with AI</footer>
 <script>
 const v=document.getElementById('v'),t=document.getElementById('t'),sp=document.getElementById('sp'),um=document.getElementById('unmute');
