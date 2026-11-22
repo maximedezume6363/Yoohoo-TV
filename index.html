@@ -1,4 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#7b2ff7"><link rel="icon" href="/icons/icon-192.png"><link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <title>YOOHOO KIDS CARTOONS TV</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Arial,sans-serif;background:#120a2b;color:#fff}
@@ -47,4 +48,5 @@ um.onclick=()=>{v.muted=false;v.play();um.style.display='none'};
 fetch('/content/playlist.json?'+Date.now()).then(r=>r.json()).then(j=>{d=j;
 document.getElementById('ch').textContent='● '+(j.channel_name||'YOOHOO TV')+' – NOW PLAYING';
 (j.episodes||[]).forEach(e=>{q.push(e);if(j.sponsor_on&&j.sponsor_video)q.push({title:'Sponsor: '+(j.sponsor_name||''),video:j.sponsor_video,ad:1})});play();});
-</script></body></html>
+</script><script>if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js");</script>
+</body></html>
